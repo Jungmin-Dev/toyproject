@@ -5,12 +5,14 @@ import com.toyproject.board.domain.member.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,9 +28,12 @@ public class MemberController {
     @PostMapping("/add")
     public String save(@Valid @ModelAttribute Member member, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
+            List<ObjectError> allErrors = bindingResult.getAllErrors();
+            for (ObjectError allError : allErrors) {
+                System.out.println("allError.getDefaultMessage() = " + allError.getDefaultMessage());
+            }
             return "members/addMemberForm";
         }
-
         memberRepository.save(member);
         return "redirect:/";
     }
